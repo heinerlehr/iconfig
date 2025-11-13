@@ -1,0 +1,25 @@
+# Mixed types in arrays
+mixed_array:
+  - "string"
+  - 42
+  - true
+  - null
+  - key: "object in array"
+  - - "nested"
+    - "array"
+
+# Configuration inheritance simulation
+base_config: &base
+  log_level: "INFO"
+  timeout: 60
+  
+development:
+  <<: *base
+  debug: true
+  log_level: "WARNING"
+  
+production:
+  <<: *base
+  debug: false
+  log_level: "ERROR"
+  timeout: 60

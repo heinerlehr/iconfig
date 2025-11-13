@@ -1,0 +1,196 @@
+# Example configuration file for testing iconfig
+# This file demonstrates various YAML data types and structures
+
+# Basic string values
+app_name: "iconfig"
+version: "1.0.0"
+description: A hierarchical configuration management system
+
+# Environment settings
+environment: development
+debug: true
+verbose_logging: false
+
+test_expand:
+    dir: ${TEST_DIR}
+    other_locations:
+        - dir1
+        - dir2
+        - ${TEST_DIR}
+
+# Numeric values
+database:
+  port: 5432
+  timeout: 30.5
+  max_connections: 100
+  retry_attempts: 3
+
+# Lists/Arrays
+supported_formats:
+  - yaml
+  - json
+  - toml
+  - env
+
+search_paths:
+  - "/etc/iconfig"
+  - "~/.config/iconfig"
+  - "./config"
+
+# Nested objects/dictionaries
+server:
+  host: "localhost"
+  port: 8080
+  ssl:
+    enabled: true
+    cert_path: "/path/to/cert.pem"
+    key_path: "/path/to/key.pem"
+  middleware:
+    - authentication
+    - logging
+    - compression
+
+# Complex nested structure
+features:
+  search:
+    enabled: true
+    algorithms:
+      - "fuzzy"
+      - "exact"
+    options:
+      case_sensitive: false
+      max_results: 50
+  indexing:
+    enabled: true
+    auto_rebuild: true
+    cache_size: "100MB"
+    file_extensions:
+      - ".yaml"
+      - ".yml"
+      - ".json"
+
+# Multi-line strings
+help_text: |
+  This is a multi-line help text that explains
+  how to use the configuration system.
+  
+  It can span multiple lines and preserve formatting.
+
+sql_query: >
+  SELECT * FROM configurations
+  WHERE active = true
+  AND updated_at > '2025-01-01'
+
+# Null/None values
+optional_setting: null
+unused_feature: ~
+
+# Boolean variations
+flags:
+  feature_a: true
+  feature_b: false
+  feature_c: yes
+  feature_d: no
+  feature_e: on
+  feature_f: off
+
+# Different number formats
+metrics:
+  float_value: 3.14159
+  scientific: 1.23e-4
+  infinity: .inf
+  not_a_number: .nan
+  octal: 0o755
+  hexadecimal: 0xFF
+
+# Date/Time (ISO 8601)
+timestamps:
+  created_at: 2025-11-13T10:30:00Z
+  updated_at: 2025-11-13
+  scheduled_time: 2025-12-01T15:45:30+01:00
+
+# Environment variable references (if supported)
+paths:
+  home: "${HOME}"
+  config_dir: "${ICONFIG_HOME:-/etc/iconfig}"
+  log_file: "${LOG_PATH}/iconfig.log"
+
+# Anchors and aliases for reuse
+defaults: &default_settings
+  timeout: 30
+  retries: 3
+  log_level: "INFO"
+
+services:
+  web_server:
+    <<: *default_settings
+    port: 8080
+    workers: 4
+  
+  background_worker:
+    <<: *default_settings
+    queue: "default"
+    concurrency: 2
+
+# Complex data structures for testing deep searches
+nested_config:
+  level_1:
+    level_2:
+      level_3:
+        level_4:
+          deep_setting: "found_it"
+          deep_list:
+            - item_1
+            - item_2
+            - nested_item:
+                key: "deep_value"
+          deep_object:
+            alpha: 1
+            beta: 2
+            gamma:
+              delta: "deepest"
+
+# Array of objects
+users:
+  - name: "admin"
+    role: "administrator"
+    permissions:
+      - "read"
+      - "write"
+      - "delete"
+    active: true
+  - name: "user1"
+    role: "user"
+    permissions:
+      - "read"
+    active: true
+  - name: "guest"
+    role: "guest"
+    permissions: []
+    active: false
+
+# Mixed types in arrays
+mixed_array:
+  - "string"
+  - 42
+  - true
+  - null
+  - key: "object in array"
+  - - "nested"
+    - "array"
+
+# Configuration inheritance simulation
+base_config: &base
+  log_level: "INFO"
+  timeout: 30
+  
+development:
+  <<: *base
+  debug: true
+  log_level: "DEBUG"
+  
+production:
+  <<: *base
+  debug: false
+  log_level: "WARNING"
+  timeout: 60

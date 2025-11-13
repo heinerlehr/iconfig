@@ -1,0 +1,12 @@
+# Array of objects
+users:
+  - name: "user1"
+    role: "user"
+    permissions:
+      - "read"
+      - "write"
+    active: true
+  - name: "guest2"
+    role: "guest"
+    permissions: []
+    active: false

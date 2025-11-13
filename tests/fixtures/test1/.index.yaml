@@ -1,0 +1,611 @@
+files:
+  config1.yaml:
+    file_path: /home/heiner/software/iconfig/tests/fixtures/test1/config1.yaml
+    level: 0
+    mtime: 1763053229.3750968
+  config2.yaml:
+    file_path: /home/heiner/software/iconfig/tests/fixtures/test1/config2.yaml
+    level: 0
+    mtime: 1763019779.3870604
+  subconfig/subconfig1.yaml:
+    file_path: /home/heiner/software/iconfig/tests/fixtures/test1/subconfig/subconfig1.yaml
+    level: 1
+    mtime: 1763019896.4630384
+  subconfig/subconfig2.yaml:
+    file_path: /home/heiner/software/iconfig/tests/fixtures/test1/subconfig/subconfig2.yaml
+    level: 1
+    mtime: 1763019955.8790243
+index:
+  algorithms:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - search
+  alpha:
+  - depth: 6
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+  - depth: 6
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+  app_name:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  auto_rebuild:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - indexing
+  beta:
+  - depth: 6
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+  - depth: 6
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+  cache_size:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - indexing
+  case_sensitive:
+  - depth: 3
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - search
+    - options
+  cert_path:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+    - ssl
+  concurrency:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - background_worker
+  config_dir:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - paths
+  created_at:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - timestamps
+  debug:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - production
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - production
+  deep_list:
+  - depth: 5
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+  - depth: 5
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+  deep_setting:
+  - depth: 5
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+  - depth: 5
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+  delta:
+  - depth: 7
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+    - gamma
+  - depth: 7
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_4
+    - deep_object
+    - gamma
+  description:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  dir:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - test_expand
+  enabled:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+    - ssl
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - search
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - indexing
+  environment:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  extra_setting:
+  - depth: 5
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path:
+    - nested_config
+    - level_1
+    - level_2
+    - level_3
+    - level_5
+  feature_a:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  feature_b:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  feature_c:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  feature_d:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  feature_e:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  feature_f:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - flags
+  file_extensions:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - indexing
+  float_value:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  help_text:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  hexadecimal:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  home:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - paths
+  host:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+  infinity:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  key_path:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+    - ssl
+  log_file:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - paths
+  log_level:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - defaults
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - web_server
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - background_worker
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - base_config
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - production
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - base_config
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - production
+  max_connections:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - database
+  max_results:
+  - depth: 3
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - features
+    - search
+    - options
+  middleware:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+  mixed_array:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  - depth: 0
+    dict_ref: config2.yaml
+    level: 0
+    path: []
+  not_a_number:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  octal:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  optional_setting:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  other_locations:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - test_expand
+  port:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - database
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - server
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - web_server
+  queue:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - background_worker
+  retries:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - defaults
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - web_server
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - background_worker
+  retry_attempts:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - database
+  scheduled_time:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - timestamps
+  scientific:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - metrics
+  search_paths:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  sql_query:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  supported_formats:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  timeout:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - database
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - defaults
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - web_server
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - background_worker
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - base_config
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - production
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - base_config
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - development
+  - depth: 1
+    dict_ref: config2.yaml
+    level: 0
+    path:
+    - production
+  unused_feature:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  updated_at:
+  - depth: 1
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - timestamps
+  users:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  - depth: 0
+    dict_ref: subconfig/subconfig2.yaml
+    level: 1
+    path: []
+  - depth: 0
+    dict_ref: subconfig/subconfig1.yaml
+    level: 1
+    path: []
+  verbose_logging:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  version:
+  - depth: 0
+    dict_ref: config1.yaml
+    level: 0
+    path: []
+  workers:
+  - depth: 2
+    dict_ref: config1.yaml
+    level: 0
+    path:
+    - services
+    - web_server
