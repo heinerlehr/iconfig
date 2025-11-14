@@ -10,6 +10,12 @@ wheels/
 .venv
 .env
 
+# Documentation builds (generated)
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Development files
 input
 output
 .vscode

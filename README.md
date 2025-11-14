@@ -304,13 +304,45 @@ iconfig/
 └── README.md
 ```
 
+### Documentation
+
+Full API documentation is available online and can be built locally:
+
+**Online Documentation:**
+- **Read the Docs**: [iconfig.readthedocs.io](https://iconfig.readthedocs.io/) (automatically updated)
+- **GitHub Pages**: [heinerlehr.github.io/iconfig](https://heinerlehr.github.io/iconfig/) (updated on each commit)
+
+**Local Documentation:**
+```bash
+# Build documentation
+make build-docs
+
+# Build and serve documentation locally
+make serve-docs
+
+# Build docs before committing (automatic via git hook)
+make commit
+```
+
+The documentation includes:
+- Complete API reference for all classes and methods
+- Usage examples and configuration patterns
+- Architecture overview and design decisions
+
+**Documentation Features:**
+- 📚 Automatic builds on every commit via GitHub Actions
+- 🔧 Pre-commit hooks ensure docs build successfully
+- 🌐 Published to Read the Docs and GitHub Pages
+- 📖 Built from docstrings and RST files in `docs/` directory
+
 ### Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Make changes and add tests
 4. Run tests: `uv run pytest`
-5. Submit a pull request
+5. Build documentation: `make build-docs`
+6. Submit a pull request
 
 ## LICENSE
 
