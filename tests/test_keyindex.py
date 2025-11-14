@@ -4,16 +4,17 @@ from pathlib import Path
 from unittest.mock import patch
 
 from iconfig.keyindex import KeyIndex
+from iconfig.labels import Labels
 
 
 class TestKeyIndex:
-    """Test cases for the KeyIndex class."""
+    """Test cases for the KeyIndex class - focused on index management and querying."""
     
     @pytest.fixture
     def test_config_dir(self):
         """Use existing test fixtures directory."""
-        return os.getenv("INCONFIG_HOME", "tests/fixtures/test1")
-
+        return str(Path(__file__).parent / 'fixtures' / 'test1')
+    
     def test_init_default(self):
         """Test KeyIndex initialization with defaults."""
         with patch.dict(os.environ, {}, clear=True):
@@ -22,7 +23,6 @@ class TestKeyIndex:
             assert ki._fn == ".index.yaml"
             assert isinstance(ki._index, dict)
             assert isinstance(ki._files, dict)
-            assert isinstance(ki._cfg, dict)
     
     def test_init_with_env_vars(self):
         """Test KeyIndex initialization with environment variables."""
@@ -34,8 +34,8 @@ class TestKeyIndex:
             assert ki._base == '/custom/path'
             assert ki._fn == 'custom_index.yaml'
     
-    def test_build(self, test_config_dir):
-        """Test building index from scratch."""
+    def test_build_index(self, test_config_dir):
+        """Test building index from configuration files."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
@@ -52,242 +52,202 @@ class TestKeyIndex:
             # Check index structure for a nested key
             timeout_entries = ki._index['timeout']
             assert len(timeout_entries) >= 1  # Should find timeout in multiple places
+            
+            # Verify entry structure
+            for entry in timeout_entries:
+                assert Labels.LEVEL in entry
+                assert Labels.DEPTH in entry
+                assert Labels.DICT_REF in entry
+                assert Labels.PATH in entry
     
     def test_get_simple_key(self, test_config_dir):
-        """Test getting a simple key value."""
+        """Test getting a simple key from the index."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Should get the app_name from config1.yaml
-            result = ki.get('app_name')
-            assert result == 'iconfig'
-    
-    def test_get_nested_key(self, test_config_dir):
-        """Test getting a nested key value."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
-            
-            # Test getting nested values from your fixtures
-            result = ki.get('debug')
-            assert result is True
-            # This key is repeated at depth 1
-            with pytest.raises(KeyError) as exc_info:
-                result = ki.get('debug', depth=1)
-            assert "Ambiguous" in str(exc_info.value)
-    
-    def test_get_key_not_found(self, test_config_dir):
-        """Test getting a non-existent key."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
-            result = ki.get('nonexistent')
-            assert result is None
-    
-    def test_get_with_default(self, test_config_dir):
-        """Test getting a key with default value."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
-            
-            result = ki.get('nonexistent', default='default_value')
-            assert result == 'default_value'
+            # Should get the app_name entry
+            entry = ki.get('app_name')
+            assert entry is not None
+            assert entry[Labels.DICT_REF] is not None
+            assert entry[Labels.PATH] is not None
     
     def test_get_with_path_filter(self, test_config_dir):
-        """Test getting a key filtered by path."""
+        """Test getting keys with path filtering."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Get port from database context
-            result = ki.get('port', path=['database'])
-            assert result == 5432
-            
-            # Get port from server context  
-            result = ki.get('port', path=['server'])
-            assert result == 8080
-    
-    def test_get_deep_nested_key(self, test_config_dir):
-        """Test getting deeply nested keys."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
-            
-            # Test deep nesting from your fixtures
-            result = ki.get('deep_setting')
-            assert result in ['found_it', 'found_it in level 2']
-            
-            # Test getting delta from deeply nested structure
-            result = ki.get('delta')
-            assert result in ['deepest', 'deepest in level 2']
+            # Test getting with path filter
+            entry = ki.get('port', path=['database'])
+            assert entry is not None
+            assert 'database' in entry[Labels.PATH]
     
     def test_get_with_level_filter(self, test_config_dir):
-        """Test getting a key filtered by level."""
+        """Test getting keys with level filtering."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Get entries at specific levels
-            result = ki.get('debug', level=0)  # Top level
-            assert result is True
+            # Test getting with level filter
+            entry = ki.get('debug', level=0)
+            assert entry is not None
+            assert entry[Labels.LEVEL] == 0
     
-    def test_get_hierarchical_override(self, test_config_dir):
-        """Test hierarchical configuration override behavior."""
+    def test_get_nonexistent_key(self, test_config_dir):
+        """Test getting a non-existent key returns None."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Test that higher level configs override lower ones
-            # Based on your fixtures, log_level appears in multiple places
-            result = ki.whereis('log_level')
-            assert len(result) >= 1
-            for entry in result:
-                assert entry['path'][0] in ['defaults', 'base_config', 'development', 'production']
+            entry = ki.get('nonexistent_key')
+            assert entry is None
     
-    def test_get_array_values(self, test_config_dir):
-        """Test getting array values from configuration."""
+    def test_whereis_method(self, test_config_dir):
+        """Test whereis method returns index entries."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Test getting array values
-            result = ki.get('supported_formats')
-            assert isinstance(result, list)
-            assert 'yaml' in result
-            assert 'json' in result
+            # Get all entries for a key
+            entries = ki.whereis('timeout')
+            assert entries is not None
+            assert isinstance(entries, (list, dict))
     
-    def test_update_key(self, test_config_dir):
-        """Test updating a key value."""
+    def test_add_entry_to_index(self, test_config_dir):
+        """Test adding entries to the index."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
+            ki = KeyIndex(load_index=False)  # Don't load existing index
             
-            # Update timeout value
-            ki.update('algorithms', value=['sha256', 'md5'])
+            # Add a new entry
+            ki.add(
+                key='test_key',
+                level=0,
+                depth=1,
+                dict_ref='test_config.yaml',
+                path=['section', 'test_key']
+            )
             
-            # Verify the update
-            result = ki.get('algorithms')
-            assert result == ['sha256', 'md5']
+            # Verify it was added
+            assert 'test_key' in ki._index
+            entries = ki._index['test_key']
+            assert len(entries) >= 1
+            
+            entry = entries[0]
+            assert entry[Labels.LEVEL] == 0
+            assert entry[Labels.DEPTH] == 1
+            assert entry[Labels.DICT_REF] == 'test_config.yaml'
+            assert entry[Labels.PATH] == ['section', 'test_key']
     
-    def test_save_and_load(self, test_config_dir):
-        """Test saving and loading index."""
+    def test_duplicate_entry_prevention(self, test_config_dir):
+        """Test that duplicate entries are not added to the index."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
+            ki = KeyIndex(load_index=False)
+            
+            # Add same entry twice
+            entry_data = {
+                'key': 'test_key',
+                'level': 0,
+                'depth': 1,
+                'dict_ref': 'test_config.yaml',
+                'path': ['section', 'test_key']
+            }
+            
+            ki.add(**entry_data)
+            ki.add(**entry_data)  # Add again
+            
+            # Should only have one entry
+            assert len(ki._index['test_key']) == 1
+    
+    def test_save_and_load_index(self, test_config_dir):
+        """Test saving and loading index to/from file."""
+        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
+            ki1 = KeyIndex()
+            
+            # Save the index
+            ki1._save()
             
             # Create new instance and load
-            ki2 = KeyIndex()
+            ki2 = KeyIndex(load_index=False)
+            ki2._load()
             
-            # Should have same index
-            assert ki2._index.keys() == ki._index.keys()
-            assert ki2._files.keys() == ki._files.keys()
-            
-            # Should be able to get values
-            result = ki2.get('app_name')
-            assert result == 'iconfig'
+            # Should have same index structure
+            assert ki2._index.keys() == ki1._index.keys()
+            assert ki2._files.keys() == ki1._files.keys()
     
-    def test_load_without_index_file(self, test_config_dir):
-        """Test load when index file doesn't exist (should build)."""
+    def test_index_update_detection(self, test_config_dir):
+        """Test that index detects when files have changed."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            
-            # Ensure no index file exists
-            index_path = Path(test_config_dir) / '.index.yaml'
-            if index_path.exists():
-                index_path.unlink()
-            
             ki = KeyIndex()
+            original_index_size = len(ki._index)
             
-            # Should have built index
-            assert len(ki._index) > 0
-            assert 'app_name' in ki._index
+            # Simulate file modification by changing mtime
+            for dict_ref, file_info in ki._files.items():
+                file_info[Labels.MTIME] += 1000  # Simulate newer file
+                break
+            
+            # Update should detect the change
+            ki._update()
+            
+            # Index should be rebuilt (this is implementation dependent)
+            assert len(ki._index) >= original_index_size
     
-    def test_special_yaml_values(self, test_config_dir):
-        """Test handling of special YAML values from your fixtures."""
+    def test_file_discovery(self, test_config_dir):
+        """Test that configuration files are properly discovered."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Test null values
-            result = ki.get('optional_setting')
-            assert result is None
+            # Should have discovered multiple files
+            assert len(ki._files) >= 2  # At least config1.yaml and config2.yaml
             
-            result = ki.get('unused_feature')
-            assert result is None
-            
-            # Test boolean variations
-            result = ki.get('feature_a')
-            assert result is True
-            
-            result = ki.get('feature_b')
-            assert result is False
+            # Check file structure
+            for dict_ref, file_info in ki._files.items():
+                assert Labels.FILE_PATH in file_info
+                assert Labels.MTIME in file_info
+                
+                # Verify file actually exists
+                file_path = Path(file_info[Labels.FILE_PATH])
+                assert file_path.exists()
+                assert file_path.suffix in ['.yaml', '.yml']
     
-    def test_numeric_values(self, test_config_dir):
-        """Test various numeric value types from your fixtures."""
+    def test_index_excludes_index_file(self, test_config_dir):
+        """Test that the index file itself is not included in discovery."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
             ki = KeyIndex()
             
-            # Test float value
-            result = ki.get('float_value')
-            assert abs(result - 3.14159) < 0.0001
+            # Index file should not be in the files list
+            index_filename = ki._fn
+            index_path = str(Path(test_config_dir) / index_filename)
             
-            # Test scientific notation
-            result = ki.get('scientific')
-            assert abs(result - 1.23e-4) < 1e-6
-            
-            # Test hex value
-            result = ki.get('hexadecimal')
-            assert result == 0xFF
+            assert index_filename not in ki._files
+            assert index_path not in ki._files
     
-    def test_anchors_and_aliases(self, test_config_dir):
-        """Test YAML anchors and aliases from your fixtures."""
+    def test_has_entry_method(self, test_config_dir):
+        """Test the has_entry method for duplicate detection."""
         with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
+            ki = KeyIndex(load_index=False)
             
-            # Test that anchor values are accessible
-            result = ki.get('retries')  # From defaults anchor
-            assert result == 3
+            # Create test entries
+            entry1 = {
+                Labels.LEVEL: 0,
+                Labels.DEPTH: 1,
+                Labels.DICT_REF: 'config.yaml',
+                Labels.PATH: ['section', 'key']
+            }
             
-            # Test inherited values in services
-            result = ki.get('workers')  # From web_server
-            assert result == 4
+            entry2 = {
+                Labels.LEVEL: 0,
+                Labels.DEPTH: 1,
+                Labels.DICT_REF: 'config.yaml',
+                Labels.PATH: ['section', 'key']
+            }
             
-            result = ki.get('concurrency')  # From background_worker  
-            assert result == 2
-    
-    def test_multiline_strings(self, test_config_dir):
-        """Test multiline string handling from your fixtures."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
+            entry3 = {
+                Labels.LEVEL: 1,  # Different level
+                Labels.DEPTH: 1,
+                Labels.DICT_REF: 'config.yaml',
+                Labels.PATH: ['section', 'key']
+            }
             
-            # Test literal block scalar (|)
-            help_text = ki.get('help_text')
-            assert isinstance(help_text, str)
-            assert 'multi-line' in help_text
-            assert '\n' in help_text  # Should preserve line breaks
+            entries = [entry1]
             
-            # Test folded scalar (>)
-            sql_query = ki.get('sql_query')
-            assert isinstance(sql_query, str)
-            assert 'SELECT' in sql_query
-    
-    def test_hierarchical_config_files(self, test_config_dir):
-        """Test that subconfig files are also indexed."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-            ki = KeyIndex()
+            # Should find duplicate
+            assert ki.has_entry(entry2, entries) is True
             
-            # Should find keys from subconfig files too
-            result = ki.get('extra_setting')  # From subconfig1.yaml
-            assert result == 'extra_found'
-            
-            # Test that we get hierarchical results
-            # deep_setting appears in both main config and subconfig with different values
-            result = ki.get('deep_setting')
-            assert result in ['found_it', 'found_it in level 2']
-        
-    def test_expansion(self, test_config_dir):
-        """Test environment variable expansion in configuration values."""
-        with patch.dict(os.environ, {'INCONFIG_HOME': test_config_dir}):
-
-            testval = '/home/testuser'
-            os.environ['TEST_DIR'] = testval
-
-            ki = KeyIndex()
-            
-            # Test expansion of $HOME
-            result = ki.get('test_expand.dir')
-
-            assert result == testval
-            
-            # Test expansion of ${HOME}
-            result = ki.get('test_expand.other_locations')
-            assert isinstance(result, list)
-            assert testval in result
+            # Should not find non-duplicate
+            assert ki.has_entry(entry3, entries) is False

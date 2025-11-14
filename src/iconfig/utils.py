@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from typing import Tuple
+
 from iconfig.labels import Labels
 
 def discover_config_files(base_path: Path, pattern: str = "*.yaml") -> dict[str, dict[str, str|float]]:
@@ -15,4 +17,19 @@ def discover_config_files(base_path: Path, pattern: str = "*.yaml") -> dict[str,
                 Labels.LEVEL: len(file.relative_to(base_path).parents) - 1
             }
     return ret
+
+def get_key_path(key:str, path:list) -> Tuple[str, list[str]]:
+    if "." in key:
+        parts = key.split(".")
+        key = parts[-1]
+        path_parts = parts[:-1]
+
+        if not path:
+            path = path_parts
+        else:
+            if isinstance(path, str):
+                path = [path]
+            path = path_parts + path
+
+    return key, path
 

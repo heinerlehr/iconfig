@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
 import yaml
-from typing import Any, Tuple
+from typing import Any
 
 from iconfig.labels import Labels
-from iconfig.utils import discover_config_files
+from iconfig.utils import discover_config_files, get_key_path
 
 class KeyIndex:
 
@@ -63,30 +63,18 @@ class KeyIndex:
     def get(self, key:str, path:list[str]|str|None=None, level:int=-1, depth:int=-1, 
             forcefirst:bool=False, default: Any=None) -> Any:
         
-        key, path = self._get_key_path(key, path)
-        if not (entry := self._find(key=key, path=path, level=level, depth=depth, forcefirst=forcefirst)):
-            return default
-        else:
+        key, path = get_key_path(key, path)
+        return self._find(key=key, path=path, level=level, depth=depth, forcefirst=forcefirst)
 
-            return self._lookup(key=key, entry=entry, default=default)
-
-    def update(self, key:str, value:Any, path:list[str]|str|None=None, level:int=-1, depth:int=-1, 
-            forcefirst:bool=False) -> None:
-        
-        key, path = self._get_key_path(key, path)
-        if not (entry := self._find(key=key, path=path, level=level, depth=depth, forcefirst=forcefirst)):
-            raise KeyError(f"Key '{key}' not found for update")
-        else:
-            self._update_nested(key=key, entry=entry, value=value)
-
-    def whereis(self, key:str, path:list[str]|str|None=None, level:int=-1, depth:int=-1) -> dict|None:
+    def whereis(self, key:str, path:list[str]|str|None=None, level:int=-1, depth:int=-1) -> list|None:
         """Return the index entry for the given key."""
 
-        key, path = self._get_key_path(key, path)
         if not (entries := self._find(key=key, path=path, level=level, depth=depth, 
                                       forcefirst=False, return_all=True)):
             return None
         ret = []
+        if not isinstance(entries, list):
+            entries = [entries]
         for entry in entries:
             ret.append({
                 Labels.LEVEL: entry[Labels.LEVEL],
@@ -97,25 +85,13 @@ class KeyIndex:
     ##################################################################################
     # Internal helper function for finding/updating entries
     ##################################################################################
-    def _get_key_path(self, key:str, path:list) -> Tuple[str, list[str]]:
-        if "." in key:
-            parts = key.split(".")
-            key = parts[-1]
-            path_parts = parts[:-1]
-            if path is None:
-                path = path_parts
-            else:
-                if isinstance(path, str):
-                    path = [path]
-                path = path_parts + path
-        return key, path
 
     def _find(self, key:str, path:list[str]|str|None=None, level:int=-1, depth:int=-1, 
              forcefirst:bool=False, return_all:bool=False) -> Any:
         """Return the entry at the highest level & smallest depth."""
 
         # Special case of key notation
-        key, path = self._get_key_path(key, path)
+        key, path = get_key_path(key, path)
 
         if key not in self._index:
             return None
@@ -171,71 +147,6 @@ class KeyIndex:
                 f"Ambiguous key '{key}': {length} entries at same level/depth"
             )
 
-    def _lookup(self, key:str, entry:dict, default: Any=None) -> Any:
-        """ Lazy lookup up of entries. """
-        dict_ref = entry[Labels.DICT_REF]
-        path = entry[Labels.PATH]
-
-        if dict_ref not in self._cfg:
-            try:
-                self._cfg[dict_ref] = self._load_config(dict_ref)
-            except Exception as e:
-                raise RuntimeError(f"Failed to load config for {dict_ref}: {e}")
-        
-        entry = self._get_nested(data=self._cfg[dict_ref], path=path)
-        return self.expand_env(entry[key]) if key in entry else self.expand_env(default)
-    
-    def _get_nested(self, data:dict, path:list[str]) -> Any:
-        """Retrieve nested value from dictionary based on path."""
-        current = data
-        for p in path:
-            if p in current:
-                current = current[p]
-            else:
-                None
-        return current
-
-    def expand_env(self,obj):
-        if isinstance(obj, str):
-            return os.path.expandvars(obj)
-        elif isinstance(obj, list):
-            return [self.expand_env(x) for x in obj]
-        elif isinstance(obj, dict):
-            return {k: self.expand_env(v) for k, v in obj.items()}
-        else:
-            return obj
-    
-    def _update_nested(self, key:str, entry:dict, value:Any) -> None:
-        """ Lazy update of entries. """
-        dict_ref = entry[Labels.DICT_REF]
-        path = entry[Labels.PATH]
-
-        if dict_ref not in self._cfg:
-            try:
-                self._cfg[dict_ref] = self._load_config(dict_ref)
-            except Exception as e:
-                raise RuntimeError(f"Failed to load config for {dict_ref}: {e}")
-        
-        self._set_nested(data=self._cfg[dict_ref], path=path, key=key, value=value)
-
-    def _set_nested(self, data:dict, path:list[str], key:str, value:Any) -> None:
-        """Set nested value in dictionary based on path."""
-        current = data
-        for p in path:
-            if p not in current or not isinstance(current[p], dict):
-                current[p] = {}
-            current = current[p]
-        current[key] = value
-
-
-    def _load_config(self, dict_ref:str) -> dict:
-        """Load configuration file given its dict_ref."""
-        if not (file_path := Path(self._files.get(dict_ref, {}).get(Labels.FILE_PATH))).exists():
-            raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")       
-        if not file_path.exists():
-            raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")
-        with open(file_path, 'r') as f:
-            return yaml.safe_load(f)
 
     ##################################################################################
     # Index building
