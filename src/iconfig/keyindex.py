@@ -39,7 +39,7 @@ import yaml
 from typing import Any
 
 from .labels import Labels
-from .utils import discover_config_files, get_key_path
+from .utils import discover_config_files, get_key_path, _load_config
 
 
 class KeyIndex:
@@ -93,7 +93,7 @@ class KeyIndex:
     _base: str = "config"
     _fn: str = ".index.yaml"
 
-    def __init__(self, config_home: str = None, load_index: bool = True):
+    def __init__(self, config_home: str = None, load_index: bool = True, force_rebuild: bool = False):
         """Initialize the KeyIndex with configuration directory and options.
 
         Sets up the internal data structures and optionally loads or builds
@@ -123,6 +123,9 @@ class KeyIndex:
             self._fn = fn
         else:
             self._fn = ".index.yaml"
+
+        if force_rebuild:
+            self._build()
 
         if load_index:
             self._load()
@@ -375,9 +378,9 @@ class KeyIndex:
         self._files.pop(self._fn, None)  # Remove index file itself if present
         self._files.pop(str(Path(self._base) / self._fn), None)
 
-        for dict_ref, file_info in self._files.items():
+        for dict_ref, _ in self._files.items():
             try:
-                cfg = self._load_config(dict_ref)
+                cfg = _load_config(dict_ref=dict_ref, files=self._files)
             except Exception as e:
                 print(f"Warning: Failed to load config '{dict_ref}': {e}")
                 continue

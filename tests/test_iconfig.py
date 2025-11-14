@@ -30,7 +30,7 @@ class TestiConfig:
     def test_get_simple_key(self, test_config_dir):
         """Test getting a simple configuration value."""
         with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
-            config = iConfig()
+            config = iConfig(force_rebuild=True)
 
             # Should get the app_name from config1.yaml
             result = config.get("app_name")

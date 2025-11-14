@@ -45,13 +45,11 @@ Functions:
 """
 
 import os
-from pathlib import Path
-import yaml
 from typing import Any, Tuple, overload, TypeVar
 
 from iconfig.labels import Labels
 from iconfig.keyindex import KeyIndex
-from iconfig.utils import get_key_path, singleton_or_not
+from iconfig.utils import get_key_path, singleton_or_not, _load_config
 
 T = TypeVar("T")
 
@@ -116,7 +114,7 @@ class iConfig:
 
     _base: str = "config"
 
-    def __init__(self):
+    def __init__(self, force_rebuild: bool = False):
         """Initialize the iConfig instance.
 
         Sets up the configuration system by initializing internal data structures
@@ -136,7 +134,7 @@ class iConfig:
 
         if (base := os.getenv("INCONFIG_HOME")) is not None:
             self._base = base
-        self._ki = KeyIndex()
+        self._ki = KeyIndex(force_rebuild=force_rebuild)
 
     # When no default is provided, it might raise KeyError or return Any
     @overload
@@ -396,7 +394,7 @@ class iConfig:
 
         if dict_ref not in self._cfg:
             try:
-                self._cfg[dict_ref] = self._load_config(dict_ref)
+                self._cfg[dict_ref] = _load_config(dict_ref=dict_ref, files=self._ki._files)
             except Exception as e:
                 raise RuntimeError(f"Failed to load config for {dict_ref}: {e}")
 
@@ -430,7 +428,7 @@ class iConfig:
 
         if dict_ref not in self._cfg:
             try:
-                self._cfg[dict_ref] = self._load_config(dict_ref)
+                self._cfg[dict_ref] = _load_config(dict_ref=dict_ref, files=self._ki._files)
             except Exception as e:
                 raise RuntimeError(f"Failed to load config for {dict_ref}: {e}")
 
@@ -445,13 +443,3 @@ class iConfig:
             current = current[p]
         current[key] = value
 
-    def _load_config(self, dict_ref: str) -> dict:
-        """Load configuration file given its dict_ref."""
-        if not (
-            file_path := Path(self._ki._files.get(dict_ref, {}).get(Labels.FILE_PATH))
-        ).exists():
-            raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")
-        if not file_path.exists():
-            raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")
-        with open(file_path, "r") as f:
-            return yaml.safe_load(f)

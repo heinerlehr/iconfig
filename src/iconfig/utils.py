@@ -31,6 +31,8 @@ from pathlib import Path
 
 from typing import Tuple
 
+import yaml
+
 from iconfig.labels import Labels
 
 
@@ -201,3 +203,60 @@ def singleton_or_not(class_):
         return instances[class_]
 
     return getinstance
+
+def _load_config(dict_ref: str, files: dict) -> dict:
+    """Load and parse a YAML configuration file from the files registry.
+
+    Internal utility function that loads a specific configuration file
+    identified by its dictionary reference. The function performs file
+    existence validation and YAML parsing with proper error handling.
+
+    Args:
+        dict_ref (str): Dictionary reference key identifying the configuration
+            file in the files registry. This is typically a relative path
+            like "config.yaml" or "database/settings.yaml".
+        files (dict): Files registry dictionary mapping dict_ref keys to
+            file metadata dictionaries containing file paths and other
+            metadata information.
+
+    Returns:
+        dict: Parsed YAML configuration data as a Python dictionary.
+        Returns the complete configuration structure from the file.
+
+    Raises:
+        FileNotFoundError: If the configuration file specified by dict_ref
+            does not exist in the files registry or on the file system.
+        yaml.YAMLError: If the YAML file contains syntax errors or cannot
+            be parsed properly.
+        PermissionError: If the file exists but cannot be read due to
+            permission restrictions.
+
+    Example:
+        Loading a configuration file::
+
+            files = {
+                "config.yaml": {
+                    "file_path": "/path/to/config.yaml",
+                    "mtime": 1699123456.789,
+                    "level": 0
+                }
+            }
+            
+            # Load the configuration
+            config_data = _load_config("config.yaml", files)
+            # Returns: {"app_name": "MyApp", "debug": True, ...}
+
+    Note:
+        This is an internal function primarily used by the KeyIndex system
+        for lazy loading of configuration files. The function includes
+        redundant file existence checks for additional safety, though this
+        may be optimized in future versions.
+    """
+    if not (
+        file_path := Path(files.get(dict_ref, {}).get(Labels.FILE_PATH))
+    ).exists():
+        raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")
+    if not file_path.exists():
+        raise FileNotFoundError(f"Configuration file '{dict_ref}' not found")
+    with open(file_path, "r") as f:
+        return yaml.safe_load(f)

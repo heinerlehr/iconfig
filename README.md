@@ -21,7 +21,7 @@ Perfect for applications that need to merge configuration from multiple sources 
 
 ### Prerequisites
 
-- Python 3.12+
+- Python 3.10+
 - PyYAML
 - python-dotenv (optional, for .env file support)
 

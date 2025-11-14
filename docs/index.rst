@@ -34,7 +34,7 @@ INSTALLATION
 Prerequisites
 -------------
 
-- Python 3.12+
+- Python 3.10+
 - PyYAML
 - python-dotenv (optional, for .env file support)
 

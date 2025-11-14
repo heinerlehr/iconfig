@@ -37,7 +37,7 @@ class TestKeyIndex:
     def test_build_index(self, test_config_dir):
         """Test building index from configuration files."""
         with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
-            ki = KeyIndex()
+            ki = KeyIndex(force_rebuild=True)
 
             # Check that files were discovered
             assert len(ki._files) > 0
