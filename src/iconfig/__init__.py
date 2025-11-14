@@ -13,7 +13,7 @@ Example:
         db_host = config.get('host', path=['database'])
 """
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __all__ = ["iConfig", "Labels"]
 
 def main() -> None:
