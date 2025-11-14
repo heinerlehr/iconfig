@@ -48,6 +48,14 @@ pip install -e .
 pip install pyyaml python-dotenv
 ```
 
+### Environment Variables
+
+Set these environment variables to customize behavior:
+
+- `INCONFIG_HOME`: Configuration directory (default: `"config"`)
+- `INCONFIG_INDEXFN`: Index file name (default: `".index.yaml"`)
+
+
 ## USAGE
 
 ### Basic Usage
@@ -69,7 +77,70 @@ api_timeout = config.get('timeout', default=30)
 debug_mode = config('debug', default=False)
 ```
 
-### Directory Structure
+### Environment Variable Expansion
+
+Configuration values support environment variable expansion:
+
+```yaml
+# config.yaml
+database:
+  url: "${DATABASE_URL}"
+  host: "${DB_HOST:-localhost}"    # With default value
+paths:
+  data: "${HOME}/data"
+  logs: "${LOG_DIR}/app.log"
+```
+
+### Keys
+
+Search can be carried out with a string key and a list of qualifier. In order to access `key` in this structure:
+
+```
+level1:
+    level2:
+        level3:
+            key: value
+```
+
+all of the following calls will result in `value`:
+
+```
+config = iConfig()
+# All equivalent
+value = config('key', path=['level1','level2','level3'])
+value = config('key', 'level1', 'level2', 'level3')
+value = config('level1.level2.level3.key')
+```
+
+### Overwriting and search algorithm
+
+iConfig does not overwrite any (duplicate) key found in configuration files. Instead, it keeps all (used) configuration files separately in memory. 
+With knowledge of the appropriate source, a developer can use the exact key wanted.
+
+iConfig differentiates `depth`and `level`. 
+
+- `level` is the hierarchy level. Top level configuration files in `ICONFIG_HOME` receive `level` 0. YAML files found in subdirectories will receive level 1 and so forth.
+
+- `depth` is the nesting level. Within a configuration file, top-level keys have `depth` 0. Subkeys have `depth` 1 and so forth. `depth` is equivalent to the length of `path`.
+
+- `path` is the "path" within the YAML file to the key. For the following example:
+```
+level1:
+    level2:
+        level3:
+            key: value
+```
+the key `key` would have the path `['level1', 'level2', 'level3]` or `level1.level2.level3` in iConfig's special notation.
+
+When not specifying `level`, `depth` and `path`, iConfig prefers
+- the highest level (i.e. deepest configuration file)
+- the lowest depth (i.e. the lowest nesting)
+
+If that is not unique (i.e. several keys at the same level and depth), a `KeyError` will be thrown. Users are then encouraged to specify
+the path either explicitly `['level1', 'level2', 'level3]`) or in iConfig's special notation (`level1.level2.level3`).
+
+
+### Example directory Structure
 
 ```
 your-project/
@@ -82,8 +153,6 @@ your-project/
 ├── .env                      # Environment variables (optional)
 └── your_app.py
 ```
-
-### Configuration Examples
 
 **config/global.yaml:**
 ```yaml
@@ -142,27 +211,6 @@ location = config.whereis('app_name')
 print(f"app_name found in: {location}")
 ```
 
-### Environment Variables
-
-Set these environment variables to customize behavior:
-
-- `INCONFIG_HOME`: Configuration directory (default: `"config"`)
-- `INCONFIG_INDEXFN`: Index file name (default: `".index.yaml"`)
-
-### Environment Variable Expansion
-
-Configuration values support environment variable expansion:
-
-```yaml
-# config.yaml
-database:
-  url: "${DATABASE_URL}"
-  host: "${DB_HOST:-localhost}"    # With default value
-paths:
-  data: "${HOME}/data"
-  logs: "${LOG_DIR}/app.log"
-```
-
 ## LIMITATIONS
 
 ### Current Limitations
@@ -212,13 +260,16 @@ value = config.get('key')
 
 ### Singleton Behavior
 
-By default, `iConfig` uses a singleton pattern - all instances share the same configuration data. This can be controlled via configuration settings.
+By default, `iConfig` uses a singleton pattern - all instances share the same configuration data. 
 
-```python
-config1 = iConfig()
-config2 = iConfig()
-assert config1 is config2  # Same instance
+This can be controlled via configuration settings by including a section
 ```
+iconfig:
+    singleton: false
+```
+
+in any *.yaml in the configuration path.
+
 
 ## DEVELOPMENT
 
@@ -263,7 +314,9 @@ iconfig/
 
 ## LICENSE
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2025 Heiner Lehr
 
 ## CHANGELOG
 

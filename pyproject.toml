@@ -1,8 +1,9 @@
 [project]
 name = "iconfig"
 version = "0.1.0"
-description = "Add your description here"
+description = "A hierarchical configuration management system for Python applications with fast key-based lookups"
 readme = "README.md"
+license = {text = "MIT"}
 authors = [
     { name = "heinerlehr", email = "heiner.lehr@gmail.com" }
 ]
