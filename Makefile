@@ -32,9 +32,16 @@ serve-docs:  ## Build and serve documentation locally
 	@echo "Starting web server at http://localhost:8000"
 	@cd docs/_build/html && uv run python -m http.server 8000
 
-commit:  ## Build docs and prepare for commit
+pre-commit:  ## Run all pre-commit checks (lint, test, docs)
+	@echo "Running pre-commit checks..."
+	@$(MAKE) lint
+	@$(MAKE) test
 	@$(MAKE) build-docs
-	@echo "Documentation built. Ready to commit."
+	@echo "All pre-commit checks passed. Ready to commit."
+
+commit:  ## Build docs and prepare for commit
+	@$(MAKE) pre-commit
+	@echo "Ready to commit."
 
 clean:  ## Clean build artifacts
 	rm -rf build/

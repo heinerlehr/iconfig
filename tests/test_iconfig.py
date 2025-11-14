@@ -18,8 +18,12 @@ class TestiConfig:
         """Test iConfig initialization without INCONFIG_HOME nor default folder "config"."""
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(Exception) as excinfo:
-                config = iConfig()
-
+                iConfig()
+            
+            # Check the actual exception type
+            print(f"Exception type: {excinfo.type.__name__}")
+            print(f"Exception message: {str(excinfo.value)}")
+            
             # Assert specific behavior based on actual exception type
             assert excinfo.type in [FileNotFoundError, RuntimeError, OSError]
     

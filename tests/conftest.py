@@ -1,8 +1,6 @@
 """
 Shared test fixtures and configuration for feedbackdigester tests.
 """
-import os
-import pytest
 from pathlib import Path
 from dotenv import load_dotenv
 
