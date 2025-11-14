@@ -23,12 +23,12 @@ format:  ## Format code
 
 build-docs:  ## Build documentation
 	@echo "Building documentation..."
-	@cd docs && uv run sphinx-build -b html . _build/html
+	@cd docs && LC_ALL=C uv run sphinx-build -b html . _build/html
 	@echo "Documentation built in docs/_build/html/"
 
 serve-docs:  ## Build and serve documentation locally
 	@echo "Building and serving documentation..."
-	@cd docs && uv run sphinx-build -b html . _build/html
+	@cd docs && LC_ALL=C uv run sphinx-build -b html . _build/html
 	@echo "Starting web server at http://localhost:8000"
 	@cd docs/_build/html && uv run python -m http.server 8000
 
