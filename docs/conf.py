@@ -8,14 +8,17 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../src"))
 
+# Import version from package
+from iconfig import __version__
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "iConfig"
 copyright = "2025, Heiner Lehr"
 author = "Heiner Lehr"
-release = "0.1.0"
-version = "0.1.0"
+release = __version__
+version = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
