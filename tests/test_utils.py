@@ -1,7 +1,7 @@
-
 import os
 from pathlib import Path
 from iconfig.utils import discover_config_files
+
 
 def test_discover_config_files():
     base_path = Path(os.getenv("INCONFIG_HOME", "tests/fixtures/test1"))

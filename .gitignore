@@ -22,3 +22,8 @@ output
 logs
 TODO.txt
 *.png
+
+.pytest_cache/
+.ruff_cache/
+.readthedocs.yml
+
