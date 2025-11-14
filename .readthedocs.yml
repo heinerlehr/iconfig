@@ -16,6 +16,9 @@ build:
       - uv sync --dev
       - uv pip install -e .
 
+# Use master as the default branch
+branch: master
+
 # Build documentation with Sphinx
 sphinx:
   configuration: docs/conf.py

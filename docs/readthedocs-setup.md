@@ -20,7 +20,7 @@
 - **Name**: `iconfig`
 - **Repository URL**: `https://github.com/heinerlehr/iconfig`
 - **Repository type**: Git
-- **Default branch**: `master` (or `main`)
+- **Default branch**: `master`
 - **Language**: English
 - **Programming language**: Python
 
@@ -41,7 +41,7 @@ The `.readthedocs.yml` file in your repository root will automatically configure
 
 ### 5. Webhook Setup (Automatic)
 
-Read the Docs automatically sets up webhooks with GitHub, so your documentation will rebuild automatically on every push to the main/master branch.
+Read the Docs automatically sets up webhooks with GitHub, so your documentation will rebuild automatically on every push to the master branch.
 
 ## Custom Domain (Optional)
 
