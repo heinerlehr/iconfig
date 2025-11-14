@@ -45,6 +45,7 @@ Functions:
 """
 
 import os
+from pathlib import Path
 from typing import Any, Tuple, overload, TypeVar
 
 from .labels import Labels
@@ -112,8 +113,6 @@ class iConfig:
         through the 'iconfig.singleton' configuration setting.
     """
 
-    _base: str = "config"
-
     def __init__(self, force_rebuild: bool = False):
         """Initialize the iConfig instance.
 
@@ -132,8 +131,11 @@ class iConfig:
         # Holds the actual configuration files
         self._cfg = {}
 
-        if (base := os.getenv("INCONFIG_HOME")) is not None:
-            self._base = base
+        # Load base directory from environment variable or use "config" as default
+        self._base = os.getenv("INCONFIG_HOME", "config")
+        if not Path(self._base).exists():
+            raise FileNotFoundError(f"Configuration base directory '{self._base}' does not exist."
+                                    "Please set the INCONFIG_HOME environment variable to a valid path.")
         self._ki = KeyIndex(force_rebuild=force_rebuild)
 
     # When no default is provided, it might raise KeyError or return Any
