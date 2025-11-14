@@ -5,21 +5,59 @@ description = "A hierarchical configuration management system for Python applica
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    { name = "heinerlehr", email = "heiner.lehr@gmail.com" }
+    { name = "Heiner Lehr", email = "heiner.lehr@gmail.com" }
 ]
-requires-python = ">=3.13"
+maintainers = [
+    { name = "Heiner Lehr", email = "heiner.lehr@gmail.com" }
+]
+requires-python = ">=3.10"
 dependencies = [
-    "pydantic>=2.12.4",
     "python-dotenv>=1.2.1",
-    "pyyaml>=6.0.3",
+    "pyyaml>=6.0.0",
 ]
+keywords = [
+    "configuration",
+    "config",
+    "yaml",
+    "hierarchical",
+    "settings",
+    "management",
+    "environment",
+    "dotenv"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+    "Typing :: Typed"
+]
+
+[project.urls]
+Homepage = "https://github.com/heinerlehr/iconfig"
+Documentation = "https://iconfig.readthedocs.io/"
+Repository = "https://github.com/heinerlehr/iconfig.git"
+Issues = "https://github.com/heinerlehr/iconfig/issues"
+Changelog = "https://github.com/heinerlehr/iconfig/blob/main/README.md#changelog"
+
+[project.optional-dependencies]
+env = ["python-dotenv>=1.0.0"]
+validation = ["pydantic>=2.0.0"]
 
 [project.scripts]
 iconfig = "iconfig:main"
 
 [build-system]
-requires = ["uv_build>=0.8.4,<0.9.0"]
-build-backend = "uv_build"
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
