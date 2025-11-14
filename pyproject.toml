@@ -1,6 +1,6 @@
 [project]
 name = "iconfig"
-version = "0.1.0"
+version = "0.1.1"
 description = "A hierarchical configuration management system for Python applications with fast key-based lookups"
 readme = "README.md"
 license = {text = "MIT"}

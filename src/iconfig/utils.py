@@ -33,7 +33,7 @@ from typing import Tuple
 
 import yaml
 
-from iconfig.labels import Labels
+from .labels import Labels
 
 
 def discover_config_files(

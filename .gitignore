@@ -26,4 +26,5 @@ TODO.txt
 .pytest_cache/
 .ruff_cache/
 .readthedocs.yml
+iconfig.code-workspace
 

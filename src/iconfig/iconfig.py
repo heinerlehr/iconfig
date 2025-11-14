@@ -47,9 +47,9 @@ Functions:
 import os
 from typing import Any, Tuple, overload, TypeVar
 
-from iconfig.labels import Labels
-from iconfig.keyindex import KeyIndex
-from iconfig.utils import get_key_path, singleton_or_not, _load_config
+from .labels import Labels
+from .keyindex import KeyIndex
+from .utils import get_key_path, singleton_or_not, _load_config
 
 T = TypeVar("T")
 
@@ -443,3 +443,6 @@ class iConfig:
             current = current[p]
         current[key] = value
 
+if __name__ == "__main__":
+    os.environ["INCONFIG_HOME"] = "/home/heiner/software/iconfig/tests/fixtures/test2"
+    config = iConfig()
