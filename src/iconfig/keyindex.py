@@ -420,22 +420,21 @@ class KeyIndex:
 
         def recurse(sub_cfg: dict, current_path: list[str], level: int):
             for key, value in sub_cfg.items():
+                # Add key to index
+                self.add(
+                    key=key,
+                    level=(
+                        self._files[dict_ref][Labels.LEVEL]
+                        if Labels.LEVEL in self._files[dict_ref]
+                        else 0
+                    ),
+                    depth=len(current_path),
+                    dict_ref=dict_ref,
+                    path=current_path,
+                )
                 if isinstance(value, dict):
                     # Recurse into nested dictionary
                     recurse(value, current_path + [key], level)
-                else:
-                    # Add key to index
-                    self.add(
-                        key=key,
-                        level=(
-                            self._files[dict_ref][Labels.LEVEL]
-                            if Labels.LEVEL in self._files[dict_ref]
-                            else 0
-                        ),
-                        depth=len(current_path),
-                        dict_ref=dict_ref,
-                        path=current_path,
-                    )
 
         recurse(sub_cfg=cfg, current_path=[], level=0)
 

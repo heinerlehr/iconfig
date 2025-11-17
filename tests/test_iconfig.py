@@ -277,3 +277,9 @@ class TestiConfig:
 
             # Test configuration-controlled singleton behavior
             # This depends on having iConfig.singleton setting in your test configs
+
+    def test_get_another_setting(self, test_config_dir):
+        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+            # Create two instances
+            config = iConfig()
+            assert config.get("another_setting")

@@ -194,3 +194,22 @@ production:
   debug: false
   log_level: "WARNING"
   timeout: 60
+
+another_setting:
+    filename: "some_file.txt"
+    levels:
+        - threshold: inf
+          list: [10, 54, 92, 255]
+        - threshold: 1000
+          list: [42, 113, 163, 255]
+        - threshold: 500
+          list: [87, 155, 201, 255]
+        - threshold: 200
+          list: [166, 214, 231, 255]
+        - threshold: 100
+          list: [220, 242, 249, 255]
+    some_number: 0.083
+    some_string: 'deptho'
+    some_dict:
+        a: 80
+        b: 120

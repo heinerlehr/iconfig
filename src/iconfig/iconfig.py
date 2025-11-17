@@ -144,7 +144,7 @@ class iConfig:
 
     # When default is provided, return type is T | None
     @overload
-    def get(self, key: str, *, default: T, **kwargs: str | list[str]) -> T: ...
+    def get(self, key: str, *, default: T, **kwargs: str | list[str]) -> T|Any: ...
 
     # When default is None, return type could be Any or None
     @overload
@@ -375,6 +375,23 @@ class iConfig:
         path, level, depth, _ = self._prep_args(*args, **kwargs)
         key, path = get_key_path(key, path)
         return self._ki.whereis(key=key, path=path, level=level, depth=depth)
+
+    def reload(self, force_rebuild: bool = False) -> None:
+        """Reload the configuration index and clear cached configurations.
+
+        Rebuilds the internal KeyIndex to reflect any changes in the configuration
+        files on disk. Also clears the in-memory cache of loaded configuration
+        files to ensure that subsequent accesses load the latest data.
+
+        Args:
+            force_rebuild (bool): If True, forces a complete rebuild of the
+            KeyIndex even if it appears up-to-date. Defaults to False.
+
+        Returns:
+            None
+        """
+        self._ki = KeyIndex(force_rebuild=force_rebuild)
+        self._cfg = {}
 
     ##################################################################################
     # Internal helper function for finding/updating entries

@@ -19,7 +19,6 @@ lint:  ## Run linting
 
 format:  ## Format code
 	uv run black .
-	uv run ruff check --fix .
 
 build-docs:  ## Build documentation
 	@echo "Building documentation..."
@@ -32,6 +31,12 @@ serve-docs:  ## Build and serve documentation locally
 	@echo "Starting web server at http://localhost:8000"
 	@cd docs/_build/html && uv run python -m http.server 8000
 
+build:  ## Build distribution packages
+	@echo "Building distribution packages..."
+	@rm -rf dist/ build/
+	uv run python -m build
+	@echo "Distribution packages built in dist/"
+
 pre-commit:  ## Run all pre-commit checks (lint, test, docs)
 	@echo "Running pre-commit checks..."
 	@$(MAKE) lint
@@ -39,8 +44,9 @@ pre-commit:  ## Run all pre-commit checks (lint, test, docs)
 	@$(MAKE) build-docs
 	@echo "All pre-commit checks passed. Ready to commit."
 
-commit:  ## Build docs and prepare for commit
+commit:  ## Build docs, distribution, and prepare for commit
 	@$(MAKE) pre-commit
+	@$(MAKE) build
 	@echo "Ready to commit."
 
 clean:  ## Clean build artifacts
