@@ -152,6 +152,18 @@ class iConfig:
         self, key: str, *, default: None, **kwargs: str | list[str]
     ) -> Any | None: ...
 
+    # Overloads for __call__ to match get() behavior
+    @overload
+    def __call__(self, key: str, **kwargs: str | list[str]) -> Any: ...
+
+    @overload
+    def __call__(self, key: str, *, default: T, **kwargs: str | list[str]) -> T | Any: ...
+
+    @overload
+    def __call__(
+        self, key: str, *, default: None, **kwargs: str | list[str]
+    ) -> Any | None: ...
+
     def __call__(
         self,
         *args: str | list[str],
