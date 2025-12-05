@@ -1,6 +1,6 @@
 [project]
-name = "iconfig"
-version = "0.1.4"
+name = "iconfig-py"
+version = "0.1.5"
 description = "A hierarchical configuration management system for Python applications with fast key-based lookups"
 readme = "README.md"
 license = {text = "MIT"}
@@ -59,6 +59,9 @@ iconfig = "iconfig:main"
 requires = ["hatchling>=1.21.0"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/iconfig"]
+
 [dependency-groups]
 dev = [
     "black>=25.11.0",
@@ -69,4 +72,5 @@ dev = [
     "sphinx-autodoc-typehints>=2.5.0",
     "myst-parser>=4.0.0",
     "build>=1.3.0",
+    "twine>=6.2.0",
 ]
