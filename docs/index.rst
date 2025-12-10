@@ -69,7 +69,7 @@ Environment Variables
 
 Set these environment variables to customize behavior:
 
-- ``INCONFIG_HOME``: Configuration directory (default: ``"config"``)
+- ``ICONFIG_HOME``: Configuration directory (default: ``"config"``)
 - ``INCONFIG_INDEXFN``: Index file name (default: ``".index.yaml"``)
 
 USAGE
@@ -82,7 +82,7 @@ Basic Usage
 
    from iconfig import iConfig
 
-   # Initialize with default config directory (or set INCONFIG_HOME)
+   # Initialize with default config directory (or set ICONFIG_HOME)
    config = iConfig()
 
    # Get a configuration value
@@ -210,7 +210,7 @@ Advanced Usage
    from iconfig import iConfig
 
    # Use custom configuration directory
-   os.environ['INCONFIG_HOME'] = '/etc/myapp'
+   os.environ['ICONFIG_HOME'] = '/etc/myapp'
    config = iConfig()
 
    # Get values with path filtering

@@ -118,11 +118,11 @@ class iConfig:
 
         Sets up the configuration system by initializing internal data structures
         and creating a KeyIndex for fast configuration lookups. The base directory
-        for configuration files can be controlled through the INCONFIG_HOME
+        for configuration files can be controlled through the ICONFIG_HOME
         environment variable.
 
         Environment Variables:
-            INCONFIG_HOME: Override the default 'config' directory path.
+            ICONFIG_HOME: Override the default 'config' directory path.
 
         Note:
             The KeyIndex is initialized during construction and will automatically
@@ -132,10 +132,10 @@ class iConfig:
         self._cfg = {}
 
         # Load base directory from environment variable or use "config" as default
-        self._base = os.getenv("INCONFIG_HOME", "config")
+        self._base = os.getenv("ICONFIG_HOME", "config")
         if not Path(self._base).exists():
             raise FileNotFoundError(f"Configuration base directory '{self._base}' does not exist."
-                                    "Please set the INCONFIG_HOME environment variable to a valid path.")
+                                    "Please set the ICONFIG_HOME environment variable to a valid path.")
         self._ki = KeyIndex(force_rebuild=force_rebuild)
 
     # When no default is provided, it might raise KeyError or return Any
@@ -207,6 +207,28 @@ class iConfig:
     ##################################################################################
     # Main access functions
     ##################################################################################
+    def __contains__(self, key: str) -> bool:
+        """Check if a configuration key exists.
+        
+        Enables the 'in' operator for membership testing.
+        
+        Args:
+            key (str): The configuration key to check for existence.
+        
+        Returns:
+            bool: True if the key exists in the configuration, False otherwise.
+        
+        Example:
+            if 'app_name' in config:
+                print("app_name is defined")
+        """
+        try:
+            return self._ki.get(key=key) is not None
+        except Exception as e:
+            if "Ambiguous key" in str(e):
+                return True
+            else:
+                raise e
 
     def get(
         self,
@@ -475,5 +497,5 @@ class iConfig:
         current[key] = value
 
 if __name__ == "__main__":
-    os.environ["INCONFIG_HOME"] = "/home/heiner/software/iconfig/tests/fixtures/test2"
+    os.environ["ICONFIG_HOME"] = "/home/heiner/software/iconfig/tests/fixtures/test2"
     config = iConfig()

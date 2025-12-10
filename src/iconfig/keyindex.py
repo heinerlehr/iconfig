@@ -101,7 +101,7 @@ class KeyIndex:
 
         Args:
             config_home (str, optional): Path to configuration directory.
-                If not provided, uses INCONFIG_HOME environment variable
+                If not provided, uses ICONFIG_HOME environment variable
                 or defaults to 'config'.
             load_index (bool, optional): Whether to automatically load/build
                 the index on initialization. Defaults to True.
@@ -113,7 +113,7 @@ class KeyIndex:
         # Set base directory
         if config_home:
             self._base = config_home
-        elif (base := os.getenv("INCONFIG_HOME")) is not None:
+        elif (base := os.getenv("ICONFIG_HOME")) is not None:
             self._base = base
         else:
             self._base = "config"
@@ -220,9 +220,7 @@ class KeyIndex:
             >>> print(value)  # 'localhost'
         """
         key, path = get_key_path(key, path)
-        return self._find(
-            key=key, path=path, level=level, depth=depth, forcefirst=forcefirst
-        )
+        return self._find(key=key, path=path, level=level, depth=depth, forcefirst=forcefirst)
 
     def whereis(
         self,
@@ -346,7 +344,7 @@ class KeyIndex:
         else:
             length = len(entries)
             msg = f"Ambiguous key '{key}': {length} entries at same level/depth:"
-            for i in range(3):
+            for i in range(length):
                 msg += f"\n{'/'.join(entries[i][Labels.PATH])}"
             raise KeyError(
                 f"Ambiguous key '{key}': {length} entries at same level/depth"
@@ -386,7 +384,8 @@ class KeyIndex:
                 continue
 
             # Recursively index keys
-            self._index_config(cfg, dict_ref)
+            if cfg:
+                self._index_config(cfg, dict_ref)
 
         self._save()
 

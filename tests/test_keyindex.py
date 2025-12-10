@@ -28,7 +28,7 @@ class TestKeyIndex:
         """Test KeyIndex initialization with environment variables."""
         with patch.dict(
             os.environ,
-            {"INCONFIG_HOME": "/custom/path", "INCONFIG_INDEXFN": "custom_index.yaml"},
+            {"ICONFIG_HOME": "/custom/path", "INCONFIG_INDEXFN": "custom_index.yaml"},
         ):
             ki = KeyIndex(load_index=False)
             assert ki._base == "/custom/path"
@@ -36,7 +36,7 @@ class TestKeyIndex:
 
     def test_build_index(self, test_config_dir):
         """Test building index from configuration files."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex(force_rebuild=True)
 
             # Check that files were discovered
@@ -62,7 +62,7 @@ class TestKeyIndex:
 
     def test_get_simple_key(self, test_config_dir):
         """Test getting a simple key from the index."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Should get the app_name entry
@@ -73,7 +73,7 @@ class TestKeyIndex:
 
     def test_get_with_path_filter(self, test_config_dir):
         """Test getting keys with path filtering."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Test getting with path filter
@@ -83,7 +83,7 @@ class TestKeyIndex:
 
     def test_get_with_level_filter(self, test_config_dir):
         """Test getting keys with level filtering."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Test getting with level filter
@@ -93,7 +93,7 @@ class TestKeyIndex:
 
     def test_get_nonexistent_key(self, test_config_dir):
         """Test getting a non-existent key returns None."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             entry = ki.get("nonexistent_key")
@@ -101,7 +101,7 @@ class TestKeyIndex:
 
     def test_whereis_method(self, test_config_dir):
         """Test whereis method returns index entries."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Get all entries for a key
@@ -111,7 +111,7 @@ class TestKeyIndex:
 
     def test_add_entry_to_index(self, test_config_dir):
         """Test adding entries to the index."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex(load_index=False)  # Don't load existing index
 
             # Add a new entry
@@ -136,7 +136,7 @@ class TestKeyIndex:
 
     def test_duplicate_entry_prevention(self, test_config_dir):
         """Test that duplicate entries are not added to the index."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex(load_index=False)
 
             # Add same entry twice
@@ -156,7 +156,7 @@ class TestKeyIndex:
 
     def test_save_and_load_index(self, test_config_dir):
         """Test saving and loading index to/from file."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki1 = KeyIndex()
 
             # Save the index
@@ -172,7 +172,7 @@ class TestKeyIndex:
 
     def test_index_update_detection(self, test_config_dir):
         """Test that index detects when files have changed."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
             original_index_size = len(ki._index)
 
@@ -189,7 +189,7 @@ class TestKeyIndex:
 
     def test_file_discovery(self, test_config_dir):
         """Test that configuration files are properly discovered."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Should have discovered multiple files
@@ -207,7 +207,7 @@ class TestKeyIndex:
 
     def test_index_excludes_index_file(self, test_config_dir):
         """Test that the index file itself is not included in discovery."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex()
 
             # Index file should not be in the files list
@@ -219,7 +219,7 @@ class TestKeyIndex:
 
     def test_has_entry_method(self, test_config_dir):
         """Test the has_entry method for duplicate detection."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             ki = KeyIndex(load_index=False)
 
             # Create test entries
@@ -251,3 +251,25 @@ class TestKeyIndex:
 
             # Should not find non-duplicate
             assert ki.has_entry(entry3, entries) is False
+
+    def test_empty_config_file(self, tmp_path):
+        """Test handling of empty configuration files."""
+        # Create a temporary config directory with an empty YAML file
+        config_dir = tmp_path / "config"
+        config_dir.mkdir()
+        
+        empty_file = config_dir / "empty.yaml"
+        empty_file.write_text("")  # Create empty file
+        
+        with patch.dict(os.environ, {"ICONFIG_HOME": str(config_dir)}):
+            ki = KeyIndex(force_rebuild=True)
+            
+            # Should discover the empty file
+            assert len(ki._files) >= 1
+            
+            # Index should be empty since no keys are defined
+            assert len(ki._index) == 0
+            
+            # Getting any key should return None
+            entry = ki.get("any_key")
+            assert entry is None

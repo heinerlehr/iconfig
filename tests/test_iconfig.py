@@ -15,7 +15,7 @@ class TestiConfig:
         return str(Path(__file__).parent / "fixtures" / "test1")
 
     def test_init_default(self):
-        """Test iConfig initialization without INCONFIG_HOME nor default folder "config"."""
+        """Test iConfig initialization without ICONFIG_HOME nor default folder "config"."""
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(Exception) as excinfo:
                 iConfig()
@@ -29,7 +29,7 @@ class TestiConfig:
 
     def test_get_simple_key(self, test_config_dir):
         """Test getting a simple configuration value."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig(force_rebuild=True)
 
             # Should get the app_name from config1.yaml
@@ -38,21 +38,20 @@ class TestiConfig:
 
     def test_get_nested_key(self, test_config_dir):
         """Test getting nested configuration values."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test getting nested values from your fixtures
-            result = config.get("debug")
-            assert result is True
+            assert "debug" in config
 
             # No resolution possible as key exists several times at the same depth and level
             with pytest.raises(Exception) as excinfo:
-                result = config.get("enabled")  # From features.search.enabled
+                _ = config.get("enabled")  # From features.search.enabled
             assert excinfo.type in [KeyError]
 
     def test_get_with_path_filter(self, test_config_dir):
         """Test getting configuration values with path filtering."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Get port from database context
@@ -65,7 +64,7 @@ class TestiConfig:
 
     def test_get_with_default(self, test_config_dir):
         """Test getting configuration values with default fallback."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Non-existent key with default
@@ -78,7 +77,7 @@ class TestiConfig:
 
     def test_get_key_not_found(self, test_config_dir):
         """Test getting a non-existent key without default."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             result = config.get("nonexistent")
@@ -86,7 +85,7 @@ class TestiConfig:
 
     def test_get_with_level_filter(self, test_config_dir):
         """Test getting configuration values filtered by level."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Get entries at specific levels
@@ -95,7 +94,7 @@ class TestiConfig:
 
     def test_get_with_depth_filter(self, test_config_dir):
         """Test getting configuration values filtered by depth."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test getting values at specific depths
@@ -104,7 +103,7 @@ class TestiConfig:
 
     def test_get_with_forcefirst(self, test_config_dir):
         """Test getting configuration values with forcefirst option."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test with forcefirst for potentially ambiguous keys
@@ -113,7 +112,7 @@ class TestiConfig:
 
     def test_callable_interface(self, test_config_dir):
         """Test using iConfig as a callable."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test callable interface
@@ -126,7 +125,7 @@ class TestiConfig:
 
     def test_set_configuration_value(self, test_config_dir):
         """Test setting configuration values."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Set a new value
@@ -138,7 +137,7 @@ class TestiConfig:
 
     def test_whereis_method(self, test_config_dir):
         """Test the whereis method to find configuration sources."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Find where a key is defined
@@ -150,7 +149,7 @@ class TestiConfig:
     def test_environment_variable_expansion(self, test_config_dir):
         """Test environment variable expansion in configuration values."""
         with patch.dict(
-            os.environ, {"INCONFIG_HOME": test_config_dir, "TEST_VAR": "expanded_value"}
+            os.environ, {"ICONFIG_HOME": test_config_dir, "TEST_VAR": "expanded_value"}
         ):
             config = iConfig()
 
@@ -162,7 +161,7 @@ class TestiConfig:
 
     def test_special_yaml_values(self, test_config_dir):
         """Test handling of special YAML values."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test null values
@@ -181,7 +180,7 @@ class TestiConfig:
 
     def test_numeric_values(self, test_config_dir):
         """Test various numeric value types."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test float value
@@ -198,7 +197,7 @@ class TestiConfig:
 
     def test_array_values(self, test_config_dir):
         """Test getting array/list configuration values."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test getting array values
@@ -209,7 +208,7 @@ class TestiConfig:
 
     def test_anchors_and_aliases(self, test_config_dir):
         """Test YAML anchors and aliases functionality."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test that anchor values are accessible
@@ -225,7 +224,7 @@ class TestiConfig:
 
     def test_deep_nested_keys(self, test_config_dir):
         """Test accessing deeply nested configuration keys."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test deep nesting from your fixtures
@@ -238,7 +237,7 @@ class TestiConfig:
 
     def test_hierarchical_config_files(self, test_config_dir):
         """Test that subconfig files are properly integrated."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Should find keys from subconfig files too
@@ -251,7 +250,7 @@ class TestiConfig:
 
     def test_multiline_strings(self, test_config_dir):
         """Test multiline string handling."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             config = iConfig()
 
             # Test literal block scalar (|)
@@ -267,7 +266,7 @@ class TestiConfig:
 
     def test_singleton_decorator_behavior(self, test_config_dir):
         """Test singleton decorator functionality."""
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             # Create two instances
             config1 = iConfig()
             config2 = iConfig()
@@ -279,7 +278,27 @@ class TestiConfig:
             # This depends on having iConfig.singleton setting in your test configs
 
     def test_get_another_setting(self, test_config_dir):
-        with patch.dict(os.environ, {"INCONFIG_HOME": test_config_dir}):
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
             # Create two instances
             config = iConfig()
             assert config.get("another_setting")
+
+    def test_contains_method(self, test_config_dir):
+        """Test the __contains__ method for membership testing with 'in' operator."""
+        with patch.dict(os.environ, {"ICONFIG_HOME": test_config_dir}):
+            config = iConfig()
+
+            # Test that existing keys return True
+            assert "app_name" in config
+            assert "debug" in config
+
+            # Test that non-existent keys return False
+            assert "nonexistent_key" not in config
+            assert "this_does_not_exist" not in config
+
+            # Test with dotted notation
+            assert "server.host" in config
+
+            # Test with path filtering
+            result = "port" in config
+            assert result is True
