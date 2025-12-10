@@ -119,7 +119,7 @@ class KeyIndex:
             self._base = "config"
 
         # Set index filename
-        if (fn := os.getenv("INCONFIG_INDEXFN")) is not None:
+        if (fn := os.getenv("ICONFIG_INDEXFN")) is not None:
             self._fn = fn
         else:
             self._fn = ".index.yaml"

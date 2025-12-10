@@ -28,7 +28,7 @@ class TestKeyIndex:
         """Test KeyIndex initialization with environment variables."""
         with patch.dict(
             os.environ,
-            {"ICONFIG_HOME": "/custom/path", "INCONFIG_INDEXFN": "custom_index.yaml"},
+            {"ICONFIG_HOME": "/custom/path", "ICONFIG_INDEXFN": "custom_index.yaml"},
         ):
             ki = KeyIndex(load_index=False)
             assert ki._base == "/custom/path"

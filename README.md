@@ -53,7 +53,7 @@ pip install pyyaml python-dotenv
 Set these environment variables to customize behavior:
 
 - `ICONFIG_HOME`: Configuration directory (default: `"config"`)
-- `INCONFIG_INDEXFN`: Index file name (default: `".index.yaml"`)
+- `ICONFIG_INDEXFN`: Index file name (default: `".index.yaml"`)
 
 
 ## USAGE
