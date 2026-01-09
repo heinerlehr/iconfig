@@ -342,13 +342,10 @@ class KeyIndex:
         elif return_all:
             return entries
         else:
-            length = len(entries)
-            msg = f"Ambiguous key '{key}': {length} entries at same level/depth:"
-            for i in range(length):
-                msg += f"\n{'/'.join(entries[i][Labels.PATH])}"
-            raise KeyError(
-                f"Ambiguous key '{key}': {length} entries at same level/depth"
-            )
+            msg = f"Ambiguous key '{key}': {len(entries)} entries at same level/depth:"
+            for entry in entries:
+                msg += f"\n{'/'.join(entry[Labels.PATH])}"
+            raise KeyError(msg)
 
     ##################################################################################
     # Index building
