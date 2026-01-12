@@ -49,6 +49,58 @@ commit:  ## Build docs, distribution, and prepare for commit
 	@$(MAKE) build
 	@echo "Ready to commit."
 
+version-patch:  ## Bump patch version (0.1.8 -> 0.1.9)
+	@echo "Bumping patch version..."
+	@python3 -c "\
+import re; \
+content = open('pyproject.toml').read(); \
+version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
+parts = version.split('.'); \
+parts[2] = str(int(parts[2]) + 1); \
+new_version = '.'.join(parts); \
+new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
+open('pyproject.toml', 'w').write(new_content); \
+print(f'Version bumped: {version} -> {new_version}'); \
+"
+
+version-minor:  ## Bump minor version (0.1.8 -> 0.2.0)
+	@echo "Bumping minor version..."
+	@python3 -c "\
+import re; \
+content = open('pyproject.toml').read(); \
+version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
+parts = version.split('.'); \
+parts[1] = str(int(parts[1]) + 1); \
+parts[2] = '0'; \
+new_version = '.'.join(parts); \
+new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
+open('pyproject.toml', 'w').write(new_content); \
+print(f'Version bumped: {version} -> {new_version}'); \
+"
+
+version-major:  ## Bump major version (0.1.8 -> 1.0.0)
+	@echo "Bumping major version..."
+	@python3 -c "\
+import re; \
+content = open('pyproject.toml').read(); \
+version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
+parts = version.split('.'); \
+parts[0] = str(int(parts[0]) + 1); \
+parts[1] = '0'; \
+parts[2] = '0'; \
+new_version = '.'.join(parts); \
+new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
+open('pyproject.toml', 'w').write(new_content); \
+print(f'Version bumped: {version} -> {new_version}'); \
+"
+
+release:  ## Build and publish to PyPI (manual git commit required)
+	@echo "Starting release process..."
+	@$(MAKE) commit
+	@echo "Publishing to PyPI using token from ~/.pypirc..."
+	@uv run twine upload dist/* --skip-existing
+	@echo "✅ Release complete! Now run: git add -A && git commit -m 'Release vX.X.X' && git push"
+
 clean:  ## Clean build artifacts
 	rm -rf build/
 	rm -rf dist/
