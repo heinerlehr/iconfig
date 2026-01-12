@@ -487,6 +487,9 @@ class iConfig:
 
         self._set_nested(data=self._cfg[dict_ref], path=path, key=key, value=value)
 
+        # RE-INDEX THE MODIFIED DICT_REF
+        self._ki.reindex_dict_ref(dict_ref, self._cfg[dict_ref])
+
     def _set_nested(self, data: dict, path: list[str], key: str, value: Any) -> None:
         """Set nested value in dictionary based on path."""
         current = data

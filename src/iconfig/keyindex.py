@@ -411,6 +411,21 @@ class KeyIndex:
         if rebuild_needed:
             self._build()
 
+    def reindex_dict_ref(self, dict_ref: str, cfg: dict) -> None:
+        """Clear and rebuild index entries for a specific configuration file."""
+        # Remove all index entries for this dict_ref
+        for key in list(self._index.keys()):
+            self._index[key] = [
+                entry for entry in self._index[key] 
+                if entry[Labels.DICT_REF] != dict_ref
+            ]
+            # Clean up empty key entries
+            if not self._index[key]:
+                del self._index[key]
+        
+        # Re-index the configuration
+        self._index_config(cfg, dict_ref)
+
     def _index_config(self, cfg: dict, dict_ref: str):
         """Recursively index keys in the configuration dictionary."""
 
