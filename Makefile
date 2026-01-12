@@ -49,50 +49,14 @@ commit:  ## Build docs, distribution, and prepare for commit
 	@$(MAKE) build
 	@echo "Ready to commit."
 
-version-patch:  ## Bump patch version (0.1.8 -> 0.1.9)
-	@echo "Bumping patch version..."
-	@python3 -c "\
-import re; \
-content = open('pyproject.toml').read(); \
-version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
-parts = version.split('.'); \
-parts[2] = str(int(parts[2]) + 1); \
-new_version = '.'.join(parts); \
-new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
-open('pyproject.toml', 'w').write(new_content); \
-print(f'Version bumped: {version} -> {new_version}'); \
-"
+version-patch:  ## Bump patch version (updates both pyproject.toml and __init__.py)
+	@python3 scripts/bump_version.py patch
 
-version-minor:  ## Bump minor version (0.1.8 -> 0.2.0)
-	@echo "Bumping minor version..."
-	@python3 -c "\
-import re; \
-content = open('pyproject.toml').read(); \
-version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
-parts = version.split('.'); \
-parts[1] = str(int(parts[1]) + 1); \
-parts[2] = '0'; \
-new_version = '.'.join(parts); \
-new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
-open('pyproject.toml', 'w').write(new_content); \
-print(f'Version bumped: {version} -> {new_version}'); \
-"
+version-minor:  ## Bump minor version (updates both pyproject.toml and __init__.py)
+	@python3 scripts/bump_version.py minor
 
-version-major:  ## Bump major version (0.1.8 -> 1.0.0)
-	@echo "Bumping major version..."
-	@python3 -c "\
-import re; \
-content = open('pyproject.toml').read(); \
-version = re.search(r'version = \"(\d+\.\d+\.\d+)\"', content).group(1); \
-parts = version.split('.'); \
-parts[0] = str(int(parts[0]) + 1); \
-parts[1] = '0'; \
-parts[2] = '0'; \
-new_version = '.'.join(parts); \
-new_content = re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_version}\"', content); \
-open('pyproject.toml', 'w').write(new_content); \
-print(f'Version bumped: {version} -> {new_version}'); \
-"
+version-major:  ## Bump major version (updates both pyproject.toml and __init__.py)
+	@python3 scripts/bump_version.py major
 
 release:  ## Build and publish to PyPI (manual git commit required)
 	@echo "Starting release process..."
